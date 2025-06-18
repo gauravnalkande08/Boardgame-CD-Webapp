@@ -12,7 +12,7 @@ module "appserviceplan1" {
 # locals {
 #   # dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
 #   java_artifact_local_path   = "${path.cwd}/artifacts/boardgame-java-app-${var.java_artifact_version}.zip"
-}
+# }
 
 # Resource to download the Dotnet artifact from JFrog Artifactory
 # resource "null_resource" "download_dotnet_artifact" {
@@ -37,7 +37,7 @@ module "appserviceplan1" {
 #   }
 
 #   depends_on = [module.webappjava]
-}
+# }
 
 # webapp dotnet kino ref app
 # module "webappdotnet" {
