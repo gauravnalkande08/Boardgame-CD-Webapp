@@ -1,31 +1,27 @@
-resource "azurerm_linux_web_app" "main" {
-  name                = var.name
+resource "azurerm_linux_web_app" "webapp" {
+  name                = var.webapp_name
   location            = var.location
   resource_group_name = var.resource_group_name
   service_plan_id     = var.service_plan_id
+  https_only          = true
 
   site_config {
+    minimum_tls_version = var.minimum_tls_version
     application_stack {
-      java_server         = "JAVA"          # For standalone executable JARs
-      java_version        = var.java_version
-      java_server_version = "Java SE"       # Specific for Java SE
-
-      # If you were deploying a WAR and needed a Tomcat container, it would be:
-      # java_server         = "TOMCAT"
-      # java_version        = var.java_version
-      # java_server_version = "TOMCAT|9.0-java${var.java_version}" # Example for Tomcat 9 with Java 17
+      node_version        = var.technology == "node" ? var.node_version : null
+      java_version        = var.technology == "java" ? var.java_version : null
+      java_server         = var.technology == "java" ? var.java_server : null
+      java_server_version = var.technology == "java" ? var.java_server_version : null
+      python_version      = var.technology == "python" ? var.python_version : null
+      dotnet_version      = var.technology == "dotnet" ? var.dotnet_version : null
     }
-
-    app_command_line = "java -jar /home/site/wwwroot/${var.app_jar_name}"
-    
-    client_affinity_enabled = false
-    https_only              = true
-    min_tls_version         = "1.2"
   }
 
-  app_settings = var.app_settings
-
-  identity {
-    type = "SystemAssigned"
+  dynamic "zip_deploy_file" {
+    for_each = var.artifact_path != null ? [var.artifact_path] : []
+    content {
+      path = zip_deploy_file.value
+      hash_content = filebase64sha256(zip_deploy_file.value)
+    }
   }
 }
