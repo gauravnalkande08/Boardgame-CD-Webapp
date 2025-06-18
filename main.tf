@@ -1,19 +1,13 @@
-# Resource Group (remains in root as it's often a top-level dependency)
-resource "azurerm_resource_group" "main" {
-  name     = var.resource_group_name
-  location = var.location
-}
-
-# App Service Plan (Assuming you have one or more for your web apps)
+# App Service Plan
 module "appserviceplan1" {
-  source              = "./modules/appserviceplan" # Assuming you have this local module
+  source              = "./modules/appServicePlan" # Assuming you have this local module
   resource_group_name = azurerm_resource_group.support_rg.name
   location            = azurerm_resource_group.support_rg.location
-  app_service_plan_name = "kinog-appservice-plan-1"
-  tier                = "Standard"
-  size                = "S1"
-  kind                = "Linux" # For Linux web apps
+  app_service_plan_name = "appserviceplan1"
+  os_type               = "Linux"
+  sku_name              = "B1"
 }
+
 ##############################################################################################################
 locals {
   # dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
