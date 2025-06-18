@@ -1,5 +1,3 @@
-# modules/app-service-plan/variables.tf
-
 variable "name" {
   description = "The name of the App Service Plan"
   type        = string
