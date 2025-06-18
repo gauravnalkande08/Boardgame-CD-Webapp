@@ -1,57 +1,34 @@
 variable "location" {
-  description = "Azure region for all resources"
+  description = "The Azure Region where all resources will be created."
   type        = string
-  default     = "East US" # You can change this to your preferred region, e.g., "Central India"
+  default     = "East US"
 }
 
-variable "resource_group_name" {
-  description = "Name of the resource group for the application"
+variable "support_resource_group" {
+  description = "Name of the resource group for supporting infrastructure."
   type        = string
-  default     = "ref-app-RG"
+  default     = "t-kinog-support-rg"
 }
 
-variable "app_service_plan_name" {
-  description = "Name of the App Service Plan"
+# --- NEW: Variables for Artifact Deployment ---
+variable "jfrog_url" {
+  description = "The base URL for your JFrog Artifactory instance (e.g., https://myorg.jfrog.io/artifactory)."
   type        = string
-  default     = "ref-app-appservice-plan"
 }
 
-variable "webapp_name" {
-  description = "Name of the Azure Web App"
+# IMPORTANT: JFROG_USER and JFROG_PASSWORD should NOT be defined as Terraform variables
+# that you pass directly into local-exec. Instead, set them as environment variables
+# in the execution environment (e.g., your CI/CD pipeline). This is a crucial security practice.
+# Example usage in your CI/CD script:
+# export JFROG_USER="your_jfrog_username"
+# export JFROG_PASSWORD="your_jfrog_api_key_or_access_token"
+
+variable "dotnet_artifact_version" {
+  description = "The specific version of the Dotnet application artifact to download and deploy (e.g., '1.0.0' or 'build-123'). Changing this value will trigger a new download and deployment."
   type        = string
-  default     = "boardgame-webapp" # Your application name
 }
 
-variable "app_service_plan_sku_name" {
-  description = "The SKU name for the App Service Plan (e.g., B1, S1, P1v2)"
+variable "java_artifact_version" {
+  description = "The specific version of the Java application artifact to download and deploy (e.g., '1.0.0' or 'build-456'). Changing this value will trigger a new download and deployment."
   type        = string
-  default     = "B1" # Basic tier for dev/test. Use S1, P1v2, etc., for production.
-}
-
-variable "webapp_java_version" {
-  description = "The Java version for the Web App runtime"
-  type        = string
-  default     = "17" # As requested
-}
-
-variable "webapp_app_jar_name" {
-  description = "The name of your deployed JAR file (important for startup command)"
-  type        = string
-  # Assuming the JAR will be renamed to 'app.jar' during deployment for simplicity.
-  # If you prefer to keep the original name, change this value AND ensure your deployment process
-  # does NOT rename it.
-  default     = "app.jar"
-}
-
-variable "webapp_app_settings" {
-  description = "A map of application settings for the Web App"
-  type        = map(string)
-  default = {
-    "SERVER_PORT" = "80" # Azure Web Apps expose port 80/443 externally
-    "WEBSITES_CONTAINER_START_TIME_LIMIT" = "300" # Increase startup timeout for larger JARs
-    # Add your specific application configuration settings here, e.g.:
-    # "SPRING_DATASOURCE_URL"      = "jdbc:mysql://<your_mysql_server>.mysql.database.azure.com:3306/<your_db_name>?useSSL=true"
-    # "SPRING_DATASOURCE_USERNAME" = "your_db_username"
-    # "SPRING_DATASOURCE_PASSWORD" = "your_db_password"
-  }
 }
