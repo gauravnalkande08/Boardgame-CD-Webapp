@@ -17,11 +17,11 @@ resource "azurerm_linux_web_app" "webapp" {
     }
   }
 
-  dynamic "zip_deploy_file" {
-    for_each = var.artifact_path != null ? [var.artifact_path] : []
-    content {
-      path = zip_deploy_file.value
-      hash_content = filebase64sha256(zip_deploy_file.value)
-    }
-  }
+  # dynamic "zip_deploy_file" {
+  #   for_each = var.artifact_path != null ? [var.artifact_path] : []
+  #   content {
+  #     path = zip_deploy_file.value
+  #     hash_content = filebase64sha256(zip_deploy_file.value)
+  #   }
+  # }
 }
