@@ -1,20 +1,13 @@
 variable "location" {
   description = "The Azure Region where all resources will be created."
-  type        = string
-  default     = "East US"
 }
 
 variable "support_resource_group" {
   description = "Name of the resource group for supporting infrastructure."
-  type        = string
-  default     = "t-kinog-support-rg"
 }
 
 # --- NEW: Variables for Artifact Deployment ---
-variable "jfrog_url" {
-  description = "The base URL for your JFrog Artifactory instance (e.g., https://myorg.jfrog.io/artifactory)."
-  type        = string
-}
+variable "jfrog_url" {}
 
 # IMPORTANT: JFROG_USER and JFROG_PASSWORD should NOT be defined as Terraform variables
 # that you pass directly into local-exec. Instead, set them as environment variables
