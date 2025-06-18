@@ -9,9 +9,9 @@ module "appserviceplan1" {
 }
 
 ##############################################################################################################
-locals {
-  # dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
-  java_artifact_local_path   = "${path.cwd}/artifacts/boardgame-java-app-${var.java_artifact_version}.zip"
+# locals {
+#   # dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
+#   java_artifact_local_path   = "${path.cwd}/artifacts/boardgame-java-app-${var.java_artifact_version}.zip"
 }
 
 # Resource to download the Dotnet artifact from JFrog Artifactory
@@ -26,17 +26,17 @@ locals {
 #   depends_on = [module.webappdotnet]
 # }
 
-# Resource to download the Java artifact from JFrog Artifactory
-resource "null_resource" "download_java_artifact" {
-  triggers = {
-    artifact_version = var.java_artifact_version
-  }
+# # Resource to download the Java artifact from JFrog Artifactory
+# resource "null_resource" "download_java_artifact" {
+#   triggers = {
+#     artifact_version = var.java_artifact_version
+#   }
 
-  provisioner "local-exec" {
-    command = "mkdir -p ${path.cwd}/artifacts && curl -sSL -u \"${JFROG_USER}:${JFROG_PASSWORD}\" -o \"${local.java_artifact_local_path}\" \"${var.jfrog_url}/my-repo/boardgame-java-app-${var.java_artifact_version}.zip\""
-  }
+#   provisioner "local-exec" {
+#     command = "mkdir -p ${path.cwd}/artifacts && curl -sSL -u \"${JFROG_USER}:${JFROG_PASSWORD}\" -o \"${local.java_artifact_local_path}\" \"${var.jfrog_url}/my-repo/boardgame-java-app-${var.java_artifact_version}.zip\""
+#   }
 
-  depends_on = [module.webappjava]
+#   depends_on = [module.webappjava]
 }
 
 # webapp dotnet kino ref app
@@ -73,8 +73,8 @@ module "webappjava" {
   java_version        = "11"
   java_server         = "TOMCAT"
   java_server_version = "10.0"
-  # NEW: Pass the local path to the downloaded artifact.
-  artifact_path       = null_resource.download_java_artifact.id != "" ? local.java_artifact_local_path : null
+  # # NEW: Pass the local path to the downloaded artifact.
+  # artifact_path       = null_resource.download_java_artifact.id != "" ? local.java_artifact_local_path : null
 }
 
 # Output for Java Web App hostname
