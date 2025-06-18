@@ -16,21 +16,21 @@ module "appserviceplan1" {
 }
 ##############################################################################################################
 locals {
-  dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
+  # dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
   java_artifact_local_path   = "${path.cwd}/artifacts/boardgame-java-app-${var.java_artifact_version}.zip"
 }
 
 # Resource to download the Dotnet artifact from JFrog Artifactory
-resource "null_resource" "download_dotnet_artifact" {
-  triggers = {
-    artifact_version = var.dotnet_artifact_version
-  }
+# resource "null_resource" "download_dotnet_artifact" {
+#   triggers = {
+#     artifact_version = var.dotnet_artifact_version
+#   }
 
-  provisioner "local-exec" {
-    command = "mkdir -p ${path.cwd}/artifacts && curl -sSL -u \"${JFROG_USER}:${JFROG_PASSWORD}\" -o \"${local.dotnet_artifact_local_path}\" \"${var.jfrog_url}/my-repo/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip\""
-  }
-  depends_on = [module.webappdotnet]
-}
+#   provisioner "local-exec" {
+#     command = "mkdir -p ${path.cwd}/artifacts && curl -sSL -u \"${JFROG_USER}:${JFROG_PASSWORD}\" -o \"${local.dotnet_artifact_local_path}\" \"${var.jfrog_url}/my-repo/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip\""
+#   }
+#   depends_on = [module.webappdotnet]
+# }
 
 # Resource to download the Java artifact from JFrog Artifactory
 resource "null_resource" "download_java_artifact" {
@@ -46,26 +46,26 @@ resource "null_resource" "download_java_artifact" {
 }
 
 # webapp dotnet kino ref app
-module "webappdotnet" {
-  source              = "./modules/webapp"
-  webapp_name         = "helloworld-webapp-dotnet-kino"
-  service_plan_id     = module.appserviceplan1.app_service_plan_id
-  location            = var.location
-  resource_group_name = var.support_resource_group
-  minimum_tls_version = "1.2"
-  technology          = "dotnet"
-  dotnet_version      = "6.0"
+# module "webappdotnet" {
+#   source              = "./modules/webapp"
+#   webapp_name         = "helloworld-webapp-dotnet-kino"
+#   service_plan_id     = module.appserviceplan1.app_service_plan_id
+#   location            = var.location
+#   resource_group_name = var.support_resource_group
+#   minimum_tls_version = "1.2"
+#   technology          = "dotnet"
+#   dotnet_version      = "6.0"
   # NEW: Pass the local path to the downloaded artifact.
   # The conditional 'null_resource.download_dotnet_artifact.id != ""' ensures
   # that this path is only passed if the download resource has been successfully
   # created/updated (i.e., the download completed).
-  artifact_path       = null_resource.download_dotnet_artifact.id != "" ? local.dotnet_artifact_local_path : null
-}
+#   artifact_path       = null_resource.download_dotnet_artifact.id != "" ? local.dotnet_artifact_local_path : null
+# }
 
 # Output for Dotnet Web App hostname
-output "default_site_hostname_dotnet_app" {
-  value = module.webappdotnet.default_site_hostname
-}
+# output "default_site_hostname_dotnet_app" {
+#   value = module.webappdotnet.default_site_hostname
+# }
 
 # webapp java kino ref app
 module "webappjava" {
