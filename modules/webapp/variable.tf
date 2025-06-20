@@ -4,25 +4,24 @@ variable "artifact_path" {
   default     = null # Default to null, making it optional for cases where you don't use this deployment method.
 }
 
-# Your existing variables (examples below, ensure yours are correct):
 variable "webapp_name" {
   description = "Name of the Azure Web App."
-  type        = string
+  type        = string # Added type
 }
 
 variable "location" {
   description = "Azure region where resources will be deployed."
-  type        = string
+  type        = string # Added type
 }
 
 variable "resource_group_name" {
   description = "Name of the resource group where the Web App will reside."
-  type        = string
+  type        = string # Added type
 }
 
 variable "service_plan_id" {
   description = "ID of the App Service Plan to associate with the Web App."
-  type        = string
+  type        = string # Added type
 }
 
 variable "minimum_tls_version" {
@@ -33,7 +32,7 @@ variable "minimum_tls_version" {
 
 variable "technology" {
   description = "Technology stack of the web app (e.g., 'dotnet', 'java', 'node', 'python')."
-  type        = string
+  type        = string # Added type
 }
 
 variable "node_version" {
