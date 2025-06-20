@@ -1,18 +1,7 @@
-# Define the resource group for supporting infrastructure
-resource "azurerm_resource_group" "support_rg" { # FIX: Added this missing resource block
-  name     = var.support_resource_group
-  location = var.location
-}
-
-# This module creates a *separate* resource group named "BoardGame-App-RG-kino".
-# I'm assuming you intend to use this resource group for your app service plan and web app.
-module "resourceGroup" {
-  source           = "./modules/resourceGroup" # Assuming this module exists and works
-  name             = "BoardGame-App-RG-kino"
-  location         = var.location
-  environment_tag  = "Development"
-  project_tag      = "BoardGame"
-  owner_tag        = "Kino"
+module "resourcegroup" {
+  source   = "./modules/resourceGroup"
+  name     = var.support_resource_group # Uses the name from your root variables
+  location = var.location               # Uses the location from your root variables
 }
 
 # Module for linux_101_1 (VM) - Still commented out as per your input
@@ -48,7 +37,7 @@ module "resourceGroup" {
 module "appserviceplan1" {
   source                = "./modules/appServicePlan"
   app_service_plan_name = "boardgame-appserviceplan-java-kino"
-  resource_group_name   = module.resourcegroup.name # FIX: Using the resource group created by 'module.resourcegroup'
+  resource_group_name   = module.resourcegroup.name 
   location              = var.location
   os_type               = "Linux" # Aligns with 'kind' in appServicePlan/main.tf
   sku_name              = "B1"    # Size
