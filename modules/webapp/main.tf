@@ -1,4 +1,4 @@
-resource "azurerm_linux_web_app" "webapp" {
+resource "azurerm_linux_web_app" "webapp" { # Resource name is "webapp"
   name                = var.webapp_name
   location            = var.location
   resource_group_name = var.resource_group_name
@@ -17,7 +17,7 @@ resource "azurerm_linux_web_app" "webapp" {
     }
   }
 
-  # dynamic "zip_deploy_file" {
+  # dynamic "zip_deploy_file" { # This block is commented out as requested for initial deployment
   #   for_each = var.artifact_path != null ? [var.artifact_path] : []
   #   content {
   #     path = zip_deploy_file.value
