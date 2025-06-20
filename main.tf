@@ -1,83 +1,132 @@
+# Define the resource group for supporting infrastructure
+resource "azurerm_resource_group" "support_rg" { # FIX: Added this missing resource block
+  name     = var.support_resource_group
+  location = var.location
+}
+
+# This module creates a *separate* resource group named "BoardGame-App-RG-kino".
+# I'm assuming you intend to use this resource group for your app service plan and web app.
+module "resourcegroup" {
+  source           = "./modules/resourceGroup" # Assuming this module exists and works
+  name             = "BoardGame-App-RG-kino"
+  location         = var.location
+  environment_tag  = "Development"
+  project_tag      = "BoardGame"
+  owner_tag        = "Kino"
+}
+
+# Module for linux_101_1 (VM) - Still commented out as per your input
+# module "linux_101_1" {
+#   source              = "tfe.axa-cloud.com/Global-Module-Sharing/vm/azure"
+#   resource_group_name = azurerm_resource_group.support_rg.name # Or module.resourcegroup.name if intended for this RG
+#   location            = azurerm_resource_group.support_rg.location
+#   vm_name             = "linux-101-1"
+#   vm_os_publisher     = "Canonical"
+#   vm_os_offer         = "0001-com-ubuntu-server-focal"
+#   vm_os_sku           = "20_04-lts-gen2"
+#   vm_os_version       = "latest"
+#   vm_size             = "Standard_B1s"
+#   tags                = { env = "dev", project = "kinog" }
+# }
+
+# Module for linux_101_3 (VM) - Still commented out as per your input
+# module "linux_101_3" {
+#   source              = "tfe.axa-cloud.com/Global-Module-Sharing/vm/azure"
+#   resource_group_name = azurerm_resource_group.support_rg.name # Or module.resourcegroup.name
+#   location            = azurerm_resource_group.support_rg.location
+#   vm_name             = "linux-101-3"
+#   vm_os_publisher     = "Canonical"
+#   vm_os_offer         = "0001-com-ubuntu-server-focal"
+#   vm_os_sku           = "20_04-lts-gen2"
+#   vm_os_version       = "latest"
+#   vm_size             = "Standard_B1s"
+#   tags                = { env = "dev", project = "kinog" }
+# }
+
+
 # App Service Plan
 module "appserviceplan1" {
-  source              = "./modules/appServicePlan" # Assuming you have this local module
-  resource_group_name = azurerm_resource_group.support_rg.name
-  location            = azurerm_resource_group.support_rg.location
-  app_service_plan_name = "appserviceplan1"
-  os_type               = "Linux"
-  sku_name              = "B1"
+  source                = "./modules/appServicePlan"
+  app_service_plan_name = "boardgame-appserviceplan-java-kino"
+  resource_group_name   = module.resourcegroup.name # FIX: Using the resource group created by 'module.resourcegroup'
+  location              = var.location
+  os_type               = "Linux" # Aligns with 'kind' in appServicePlan/main.tf
+  sku_name              = "B1"    # Size
+  sku_tier              = "Basic" # Tier for B1 size
 }
 
 ##############################################################################################################
+# --- COMMENT START: Artifact Download and Application Deployment Logic ---
 # locals {
-#   # dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
 #   java_artifact_local_path   = "${path.cwd}/artifacts/boardgame-java-app-${var.java_artifact_version}.zip"
+#   # dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
 # }
 
-# Resource to download the Dotnet artifact from JFrog Artifactory
-# resource "null_resource" "download_dotnet_artifact" {
-#   triggers = {
-#     artifact_version = var.dotnet_artifact_version
-#   }
-
-#   provisioner "local-exec" {
-#     command = "mkdir -p ${path.cwd}/artifacts && curl -sSL -u \"${JFROG_USER}:${JFROG_PASSWORD}\" -o \"${local.dotnet_artifact_local_path}\" \"${var.jfrog_url}/my-repo/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip\""
-#   }
-#   depends_on = [module.webappdotnet]
-# }
-
-# # Resource to download the Java artifact from JFrog Artifactory
 # resource "null_resource" "download_java_artifact" {
 #   triggers = {
 #     artifact_version = var.java_artifact_version
 #   }
 
 #   provisioner "local-exec" {
-#     command = "mkdir -p ${path.cwd}/artifacts && curl -sSL -u \"${JFROG_USER}:${JFROG_PASSWORD}\" -o \"${local.java_artifact_local_path}\" \"${var.jfrog_url}/my-repo/boardgame-java-app-${var.java_artifact_version}.zip\""
+#     command = <<-EOT
+#       mkdir -p ./artifacts
+#       curl -u "${JFROG_USER}:${JFROG_PASSWORD}" "${var.jfrog_url}/my-repo/boardgame-java-app-${var.java_artifact_version}.zip" -o "${local.java_artifact_local_path}"
+#     EOT
 #   }
-
-#   depends_on = [module.webappjava]
+#   # depends_on = [module.webappjava] # REMOVED: This creates a cycle. Terraform will infer dependency from artifact_path usage.
 # }
 
-# webapp dotnet kino ref app
-# module "webappdotnet" {
-#   source              = "./modules/webapp"
-#   webapp_name         = "helloworld-webapp-dotnet-kino"
-#   service_plan_id     = module.appserviceplan1.app_service_plan_id
-#   location            = var.location
-#   resource_group_name = var.support_resource_group
-#   minimum_tls_version = "1.2"
-#   technology          = "dotnet"
-#   dotnet_version      = "6.0"
-  # NEW: Pass the local path to the downloaded artifact.
-  # The conditional 'null_resource.download_dotnet_artifact.id != ""' ensures
-  # that this path is only passed if the download resource has been successfully
-  # created/updated (i.e., the download completed).
-#   artifact_path       = null_resource.download_dotnet_artifact.id != "" ? local.dotnet_artifact_local_path : null
+# resource "null_resource" "download_dotnet_artifact" {
+#   # This block is for Dotnet, currently commented out
+#   # triggers = {
+#   #   artifact_version = var.dotnet_artifact_version
+#   # }
+#   # provisioner "local-exec" {
+#   #   command = "mkdir -p ${path.cwd}/artifacts && curl -sSL -u \"${JFROG_USER}:${JFROG_PASSWORD}\" -o \"${local.dotnet_artifact_local_path}\" \"${var.jfrog_url}/my-repo/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip\""
+#   # }
+#   # depends_on = [module.webappdotnet]
 # }
+# --- COMMENT END: Artifact Download and Application Deployment Logic ---
 
-# Output for Dotnet Web App hostname
-# output "default_site_hostname_dotnet_app" {
-#   value = module.webappdotnet.default_site_hostname
-# }
 
 # webapp java kino ref app
 module "webappjava" {
   source              = "./modules/webapp"
   webapp_name         = "boardgame-webapp-java-kino"
-  service_plan_id     = module.appserviceplan1.app_service_plan_id
+  service_plan_id     = module.appserviceplan1.id # FIX: Corrected to use .id output from appserviceplan module
   location            = var.location
-  resource_group_name = var.support_resource_group
+  resource_group_name = module.resourcegroup.name # FIX: Using the resource group created by 'module.resourcegroup'
   minimum_tls_version = "1.2"
   technology          = "java"
   java_version        = "11"
   java_server         = "TOMCAT"
   java_server_version = "10.0"
-  # # NEW: Pass the local path to the downloaded artifact.
-  # artifact_path       = null_resource.download_java_artifact.id != "" ? local.java_artifact_local_path : null
+  # artifact_path = null_resource.download_java_artifact.id != "" ? local.java_artifact_local_path : null # This is commented out for infrastructure-only deploy
+  artifact_path = null # FIX: Explicitly set to null for initial infrastructure deployment
 }
+
+# webapp dotnet kino ref app (Still commented out as per your input)
+# module "webappdotnet" {
+#   source              = "./modules/webapp"
+#   webapp_name         = "helloworld-webapp-dotnet-kino"
+#   service_plan_id     = module.appserviceplan1.id # Corrected to use .id
+#   location            = var.location
+#   resource_group_name = module.resourcegroup.name # Using the correct RG
+#   minimum_tls_version = "1.2"
+#   technology          = "dotnet"
+#   dotnet_version      = "6.0"
+#   artifact_path       = null # Set to null for infrastructure-only deploy
+# }
+
 
 # Output for Java Web App hostname
 output "default_site_hostname_java_app" {
-  value = module.webappjava.default_site_hostname
+  description = "The default hostname of the Azure Java Web App."
+  value       = module.webappjava.default_hostname # FIX: Corrected to use .default_hostname output from webapp module
 }
+
+# Output for Dotnet Web App hostname (Still commented out)
+# output "default_site_hostname_dotnet_app" {
+#   description = "The default hostname of the Azure Dotnet Web App."
+#   value       = var.dotnet_artifact_version != "0.0.0" ? module.webappdotnet[0].default_hostname : "N/A - Dotnet app not deployed"
+# }
