@@ -6,7 +6,7 @@ resource "azurerm_resource_group" "support_rg" { # FIX: Added this missing resou
 
 # This module creates a *separate* resource group named "BoardGame-App-RG-kino".
 # I'm assuming you intend to use this resource group for your app service plan and web app.
-module "resourcegroup" {
+module "resourceGroup" {
   source           = "./modules/resourceGroup" # Assuming this module exists and works
   name             = "BoardGame-App-RG-kino"
   location         = var.location
