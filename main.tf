@@ -39,8 +39,7 @@ module "appserviceplan1" {
   app_service_plan_name = "boardgame-appserviceplan-java-kino"
   resource_group_name   = module.resourcegroup.name 
   location              = var.location
-  os_type               = "Linux" # Aligns with 'kind' in appServicePlan/main.tf
-  sku_name              = "B1"    # Size
+  sku_size              = "S1"
   sku_tier              = "Standard"
 }
 
