@@ -41,6 +41,7 @@ module "appserviceplan1" {
   location              = var.location
   os_type               = "Linux" # Aligns with 'kind' in appServicePlan/main.tf
   sku_name              = "B1"    # Size
+  sku_tier              = "Standard"
 }
 
 ##############################################################################################################
