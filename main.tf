@@ -40,8 +40,7 @@ module "appserviceplan1" {
   resource_group_name   = module.resourcegroup.name 
   location              = var.location
   os_type               = "Linux" # Aligns with 'kind' in appServicePlan/main.tf
-  sku_name              = "F1"    # Size
-  sku_tier              = "Free" # Tier for B1 size
+  sku_name              = "B1"    # Size
 }
 
 ##############################################################################################################
