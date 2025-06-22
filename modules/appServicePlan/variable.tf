@@ -10,11 +10,5 @@ variable "location" {
   description = "Azure region for the App Service Plan."
   type        = string # Added type
 }
-variable "sku_size" { # This will be the size (e.g., 'B1', 'S1')
-  description = "The name (size) of the SKU for the App Service Plan."
-  type        = string # Added type
-}
-variable "sku_tier" { # Added for clarity and to align with the 'sku' block in main.tf
-  description = "The tier of the SKU for the App Service Plan (e.g., 'Basic', 'Standard')."
-  type        = string # Added type
-}
+variable "sku_name" {}
+variable "os_type" {}
