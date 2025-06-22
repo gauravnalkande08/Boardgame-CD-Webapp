@@ -39,8 +39,8 @@ module "appserviceplan1" {
   app_service_plan_name = "boardgame-appserviceplan-java-kino"
   resource_group_name   = module.resourcegroup.name 
   location              = var.location
-  sku_size              = "S1"
-  sku_tier              = "Standard"
+  sku_name              = "P1v2"
+  os_type               = "Linux"
 }
 
 ##############################################################################################################
