@@ -10,11 +10,7 @@ variable "location" {
   description = "Azure region for the App Service Plan."
   type        = string # Added type
 }
-variable "os_type" {
-  description = "Operating system for the App Service Plan ('Linux' or 'Windows')."
-  type        = string # Added type
-}
-variable "sku_name" { # This will be the size (e.g., 'B1', 'S1')
+variable "sku_size" { # This will be the size (e.g., 'B1', 'S1')
   description = "The name (size) of the SKU for the App Service Plan."
   type        = string # Added type
 }
