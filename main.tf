@@ -66,26 +66,6 @@ module "appserviceplan1" {
 }
 
 ##############################################################################################################
-# --- COMMENT START: Artifact Download and Application Deployment Logic ---
-locals {
-  java_artifact_local_path   = "${path.cwd}/artifacts/boardgame-java-app-${var.java_artifact_version}.zip"
- # dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
-}
-
-resource "null_resource" "download_java_artifact" {
-  triggers = {
-    artifact_version = var.java_artifact_version
-  }
-}
-  provisioner "local-exec" {
-    command = <<-EOT
-      mkdir -p ./artifacts
-      curl -u "${JFROG_USER}:${JFROG_PASSWORD}" "${var.jfrog_url}/my-repo/boardgame-java-app-${var.java_artifact_version}.zip" -o "${local.java_artifact_local_path}"
-    EOT
-  }
-  # depends_on = [module.webappjava] # REMOVED: This creates a cycle. Terraform will infer dependency from artifact_path usage.
-}
-
 # resource "null_resource" "download_dotnet_artifact" {
 #   # This block is for Dotnet, currently commented out
 #   # triggers = {
