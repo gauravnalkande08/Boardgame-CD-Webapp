@@ -1,6 +1,5 @@
-# Define Local Values (for artifact paths)
 locals {
-  java_artifact_local_path = "${path.cwd}/artifacts/boardgame-java-app-${var.java_artifact_version}.zip"
+  java_artifact_local_path = "${path.cwd}/artifacts/database_service_project-${var.java_artifact_version}-SNAPSHOT.jar.original"
   # dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
 }
 
@@ -14,7 +13,7 @@ resource "null_resource" "download_java_artifact" {
   provisioner "local-exec" {
     command = <<-EOT
       mkdir -p ./artifacts
-      curl -u "${JFROG_USER}:${JFROG_PASSWORD}" "${var.jfrog_url}/my-repo/boardgame-java-app-${var.java_artifact_version}.zip" -o "${local.java_artifact_local_path}"
+      curl -u "${JFROG_USER}:${JFROG_PASSWORD}" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT.jar.original" -o "${local.java_artifact_local_path}"
     EOT
   }
   # depends_on is not needed here; Terraform infers dependencies when local.java_artifact_local_path is used
