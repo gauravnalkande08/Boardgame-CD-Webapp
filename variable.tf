@@ -10,10 +10,12 @@ variable "support_resource_group" {
   default     = "t-kinog-support-rg" # Added type and default
 }
 
-variable "JFROG_URL" {
+variable "jfrog_url" {
   description = "The base URL for your JFrog Artifactory instance (e.g., https://myorg.jfrog.io/artifactory)."
   type        = string # Added type - no default, so must be provided in tfvars or CLI
 }
+
+variable "JFROG_USER" {}
 
 variable "JFROG_PASSWORD" {}
 
