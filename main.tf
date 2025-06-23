@@ -16,7 +16,7 @@ resource "null_resource" "download_java_artifact" {
       JFROG_PASSWORD = var.jfrog_password
     command = <<-EOT
       mkdir -p ./artifacts
-      curl -u "${JFROG_USER}:${JFROG_PASSWORD}" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT.jar.original" -o "${local.java_artifact_local_path}"
+      curl -u "$JFROG_USER:$JFROG_PASSWORD" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT.jar.original" -o "${local.java_artifact_local_path}"
     EOT
   }
 }
