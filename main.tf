@@ -11,6 +11,9 @@ resource "null_resource" "download_java_artifact" {
 
   # FIX: provisioner block must be nested inside the resource block
   provisioner "local-exec" {
+    environment = {
+      JFROG_USER     = var.jfrog_user      # Assuming you have a variable named jfrog_user
+      JFROG_PASSWORD = var.jfrog_password
     command = <<-EOT
       mkdir -p ./artifacts
       curl -u "${JFROG_USER}:${JFROG_PASSWORD}" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT.jar.original" -o "${local.java_artifact_local_path}"
