@@ -1,21 +1,23 @@
-# --- COMMENT START: Artifact Download and Application Deployment Logic ---
+# Define Local Values (for artifact paths)
 locals {
-  java_artifact_local_path   = "${path.cwd}/artifacts/boardgame-java-app-${var.java_artifact_version}.zip"
- # dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
+  java_artifact_local_path = "${path.cwd}/artifacts/boardgame-java-app-${var.java_artifact_version}.zip"
+  # dotnet_artifact_local_path = "${path.cwd}/artifacts/helloworld-dotnet-app-${var.dotnet_artifact_version}.zip"
 }
 
+# Resource to download the Java artifact
 resource "null_resource" "download_java_artifact" {
   triggers = {
     artifact_version = var.java_artifact_version
   }
-}
+
+  # FIX: provisioner block must be nested inside the resource block
   provisioner "local-exec" {
     command = <<-EOT
       mkdir -p ./artifacts
       curl -u "${JFROG_USER}:${JFROG_PASSWORD}" "${var.jfrog_url}/my-repo/boardgame-java-app-${var.java_artifact_version}.zip" -o "${local.java_artifact_local_path}"
     EOT
   }
-  # depends_on = [module.webappjava] # REMOVED: This creates a cycle. Terraform will infer dependency from artifact_path usage.
+  # depends_on is not needed here; Terraform infers dependencies when local.java_artifact_local_path is used
 }
 
 module "resourcegroup" {
