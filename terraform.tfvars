@@ -1,6 +1,8 @@
 # Infrastructure Variables (These override defaults from variables.tf if specified)
 location               = "West US 2"
 support_resource_group = "t-kinog-support-rg"
+JFROG_URL              = "gauravnalkande08@gmail.com"
+JFROG_PASSWORD         = "Gaurav@5055"
 
 # JFrog and Artifact Deployment Variables
 # These must be provided as they don't have defaults in variables.tf
