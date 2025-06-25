@@ -64,3 +64,8 @@ variable "dotnet_version" {
   type        = string
   default     = null
 }
+
+variable "java_artifact_version" {
+  description = "The version of the Java artifact, used for naming the JAR inside the deployable zip."
+  type        = string
+}
