@@ -92,8 +92,10 @@ module "webappjava" {
   java_version        = "11"
   java_server         = "TOMCAT"
   java_server_version = "10.0"
-  # artifact_path = null_resource.download_java_artifact.id != "" ? local.java_artifact_local_path : null # This is commented out for infrastructure-only deploy
-  # artifact_path = null # FIX: Explicitly set to null for initial infrastructure deployment
+  java_artifact_version = var.java_artifact_version
+  depends_on = [
+    null_resource.download_java_artifact,
+  ]
 }
 
 # webapp dotnet kino ref app (Still commented out as per your input)
