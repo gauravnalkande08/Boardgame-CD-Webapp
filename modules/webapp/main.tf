@@ -5,7 +5,6 @@ resource "azurerm_linux_web_app" "webapp" {
   service_plan_id     = var.service_plan_id
   https_only          = true
 
-  # FIX: app_settings IS A DIRECT ARGUMENT of the resource, NOT inside site_config
   app_settings = {
     WEBSITE_RUN_FROM_PACKAGE = "1"
     # WEBSITES_PORT = "8080" # Uncomment if your app listens on this port
@@ -22,9 +21,16 @@ resource "azurerm_linux_web_app" "webapp" {
       java_server_version = var.technology == "java" ? var.java_server_version : null
       python_version      = var.technology == "python" ? var.python_version : null
       dotnet_version      = var.technology == "dotnet" ? var.dotnet_version : null
+      linux_fx_version    = var.technology == "java" ? "JAVA|${var.java_version}" : null
     }
-
-    # app_command_line REMAINS inside the site_config block
     app_command_line = var.technology == "java" ? "java -jar /home/site/wwwroot/database_service_project-${var.java_artifact_version}-SNAPSHOT.jar.original --server.port=80" : null
+  }
+  
+# It takes the path to the local ZIP file.
+  zip_deploy_file = var.artifact_path
+  lifecycle {
+    ignore_changes = [
+      zip_deploy_file # Ignore changes to the zip_deploy_file itself after initial deployment
+    ]
   }
 }
