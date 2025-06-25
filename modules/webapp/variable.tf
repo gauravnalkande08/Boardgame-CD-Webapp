@@ -69,3 +69,8 @@ variable "java_artifact_version" {
   description = "The version of the Java artifact, used for naming the JAR inside the deployable zip."
   type        = string
 }
+
+variable "artifact_path" { # Re-added: This variable now holds the path to the downloaded .zip
+  description = "The local file path to the ZIP artifact for deployment."
+  type        = string
+}
