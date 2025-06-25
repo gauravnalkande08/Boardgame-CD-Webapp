@@ -92,7 +92,7 @@ module "webappjava" {
   java_version        = "11"
   java_server         = "TOMCAT"
   java_server_version = "10.0"
-  artifact_path = null_resource.download_java_artifact.id != "" ? local.java_artifact_local_path : null # This is commented out for infrastructure-only deploy
+  # artifact_path = null_resource.download_java_artifact.id != "" ? local.java_artifact_local_path : null # This is commented out for infrastructure-only deploy
   # artifact_path = null # FIX: Explicitly set to null for initial infrastructure deployment
 }
 
@@ -109,6 +109,22 @@ module "webappjava" {
 #   artifact_path       = null # Set to null for infrastructure-only deploy
 # }
 
+# --- APPLICATION DEPLOYMENT (USING OFFICIAL azurerm_app_service_source_control) ---
+# This resource specifically handles deploying your ZIP file to the App Service.
+resource "azurerm_app_service_source_control" "java_app_deployment" {
+  app_id = module.webappjava.id # Link to your Azure Web App
+  local_git_enabled = true
+  repository_url = local.java_artifact_local_path
+  branch     = "master" # This is often required even for zip deploy; it can be a dummy branch name
+  repository_type = "ZipPackage" # Explicitly declare it's a ZIP package
+  depends_on = [
+    module.webappjava,
+    null_resource.download_java_artifact,
+  ]
+  triggers = {
+    deploy_zip_checksum = filemd5(local.java_artifact_local_path)
+  }
+}
 
 # Output for Java Web App hostname
 output "default_site_hostname_java_app" {
