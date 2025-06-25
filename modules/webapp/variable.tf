@@ -1,9 +1,3 @@
-variable "artifact_path" {
-  description = "The local file path to the ZIP artifact for deployment. Set to null if not deploying via this method."
-  type        = string
-  default     = null # Default to null, making it optional for cases where you don't use this deployment method.
-}
-
 variable "webapp_name" {
   description = "Name of the Azure Web App."
   type        = string # Added type
