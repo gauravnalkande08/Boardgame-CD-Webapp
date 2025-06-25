@@ -7,6 +7,10 @@ resource "azurerm_linux_web_app" "webapp" { # Resource name is "webapp"
 
   site_config {
     minimum_tls_version = var.minimum_tls_version
+    app_settings = {
+      WEBSITE_RUN_FROM_PACKAGE = "1" # Tells App Service to run from the deployed zip
+      # WEBSITES_PORT = "8080" # Uncomment if your app listens on this port
+    }
     application_stack {
       node_version        = var.technology == "node" ? var.node_version : null
       java_version        = var.technology == "java" ? var.java_version : null
@@ -14,14 +18,7 @@ resource "azurerm_linux_web_app" "webapp" { # Resource name is "webapp"
       java_server_version = var.technology == "java" ? var.java_server_version : null
       python_version      = var.technology == "python" ? var.python_version : null
       dotnet_version      = var.technology == "dotnet" ? var.dotnet_version : null
-    }
-  }
-
-  dynamic "zip_deploy_file" { # This block is commented out as requested for initial deployment
-    for_each = var.artifact_path != null ? [var.artifact_path] : []
-    content {
-      path = zip_deploy_file.value
-      hash_content = filebase64sha256(zip_deploy_file.value)
+    app_command_line    = var.technology == "java" ? "java -jar /home/site/wwwroot/database_service_project-${var.java_artifact_version}-SNAPSHOT.jar.original --server.port=80" : null
     }
    }
-}
+  }
