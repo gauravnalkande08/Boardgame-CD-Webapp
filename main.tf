@@ -62,7 +62,7 @@ module "resourcegroup" {
 # App Service Plan
 module "appserviceplan1" {
   source                = "./modules/appServicePlan"
-  app_service_plan_name = "boardgame-appserviceplan-java-kino"
+  app_service_plan_name = "b-appserviceplan-java-kino"
   resource_group_name   = module.resourcegroup.name
   location              = var.location
   sku_name              = "P1v2"
