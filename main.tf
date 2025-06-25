@@ -15,8 +15,10 @@ resource "null_resource" "download_java_artifact" {
       JFROG_USER     = var.jfrog_user      # Assuming you have a variable named jfrog_user
       JFROG_PASSWORD = var.jfrog_password
     command = <<-EOT
-      mkdir -p ./artifacts
-      curl -u "$JFROG_USER:$JFROG_PASSWORD" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT.zip" -o "${local.java_artifact_local_path}"
+      IF NOT EXIST "artifacts" mkdir "artifacts"
+      curl -u "%JFROG_USER%:%JFROG_PASSWORD%" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT.zip" -o "${local.java_artifact_local_path}"
+    #  mkdir -p ./artifacts
+    #  curl -u "$JFROG_USER:$JFROG_PASSWORD" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT.zip" -o "${local.java_artifact_local_path}"
     EOT
   }
 }
