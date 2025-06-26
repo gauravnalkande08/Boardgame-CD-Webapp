@@ -14,7 +14,6 @@ resource "null_resource" "download_java_artifact" {
       JFROG_USER     = var.jfrog_user
       JFROG_PASSWORD = var.jfrog_password
     }
-    shell = ["bash.exe", "-c"] # Explicitly use Git Bash
     command = <<-EOT
       echo "Attempting to create artifacts directory..."
       mkdir -p ./artifacts
