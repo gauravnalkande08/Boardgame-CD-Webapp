@@ -19,9 +19,9 @@ variable "jfrog_user" {}
 
 variable "jfrog_password" {}
 
-variable "JFROG_PASSWORD"
+variable "JFROG_PASSWORD" {}
 
-variable "JFROG_USER"
+variable "JFROG_USER" {}
 
 # IMPORTANT: JFROG_USER and JFROG_PASSWORD should NOT be defined as Terraform variables
 # that you pass directly into local-exec. Instead, set them as environment variables
