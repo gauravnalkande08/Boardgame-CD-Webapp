@@ -1,6 +1,6 @@
 locals {
   # Path where the pre-zipped artifact will be downloaded locally
-  java_artifact_local_path = "${path.cwd}/artifacts/database_service_project-${var.java_artifact_version}-SNAPSHOT.zip"
+  java_artifact_local_path = "${path.cwd}/artifacts/database_service_project-${var.java_artifact_version}-SNAPSHOT-SNAPSHOT.zip"
 }
 
 # Resource to download the Java artifact
@@ -18,7 +18,7 @@ resource "null_resource" "download_java_artifact" {
       echo "Attempting to create artifacts directory..."
       mkdir -p ./artifacts
       echo "Downloading deployment zip from JFrog Artifactory..."
-      curl -u "$JFROG_USER:$JFROG_PASSWORD" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT.zip" -o "${local.java_artifact_local_path}"
+      curl -u "$JFROG_USER:$JFROG_PASSWORD" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT-SNAPSHOT.zip" -o "${local.java_artifact_local_path}"
       echo "Deployment zip downloaded to: ${local.java_artifact_local_path}"
     EOT
   }
