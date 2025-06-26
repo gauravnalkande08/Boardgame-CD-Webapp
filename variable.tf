@@ -15,9 +15,9 @@ variable "jfrog_url" {
   type        = string # Added type - no default, so must be provided in tfvars or CLI
 }
 
-variable "JFROG_USER" {}
+variable "jfrog_user" {}
 
-variable "JFROG_PASSWORD" {}
+variable "jfrog_password" {}
 
 # IMPORTANT: JFROG_USER and JFROG_PASSWORD should NOT be defined as Terraform variables
 # that you pass directly into local-exec. Instead, set them as environment variables
