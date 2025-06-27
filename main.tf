@@ -14,7 +14,10 @@ resource "null_resource" "download_java_artifact" {
       JFROG_USER     = var.jfrog_user
       JFROG_PASSWORD = var.jfrog_password
     }
+    shell = ["bash.exe", "-c"] 
     command = <<-EOT
+      set -e
+
       mkdir -p ./artifacts
       echo "Downloading deployment zip from JFrog Artifactory..."
       curl -u "$JFROG_USER:$JFROG_PASSWORD" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT.zip" -o "${local.java_artifact_local_path}"
