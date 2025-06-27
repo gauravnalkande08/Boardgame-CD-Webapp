@@ -15,6 +15,7 @@ resource "null_resource" "download_java_artifact" {
       JFROG_USER     = var.jfrog_user
       JFROG_PASSWORD = var.jfrog_password
     }
+    shell = ["bash.exe", "-c"]
     command = <<-EOT
       set -e
 
