@@ -1,6 +1,6 @@
 locals {
   # Path where the pre-zipped artifact will be downloaded locally
-  java_artifact_local_path = "${path.cwd}/artifacts/database_service_project-${var.java_artifact_version}-SNAPSHOT-SNAPSHOT.zip"
+  java_artifact_local_path = "${path.cwd}/artifacts/database_service_project-${var.java_artifact_version}-SNAPSHOT.zip"
 }
 
 # Resource to download the Java artifact
@@ -15,11 +15,34 @@ resource "null_resource" "download_java_artifact" {
       JFROG_PASSWORD = var.jfrog_password
     }
     command = <<-EOT
-      echo "Attempting to create artifacts directory..."
+      set -e
+
+      echo "DEBUG: Current working directory: $(pwd)"
+      echo "DEBUG: Attempting to create artifacts directory..."
       mkdir -p ./artifacts
-      echo "Downloading deployment zip from JFrog Artifactory..."
-      curl -u "$JFROG_USER:$JFROG_PASSWORD" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT-SNAPSHOT.zip" -o "${local.java_artifact_local_path}"
-      echo "Deployment zip downloaded to: ${local.java_artifact_local_path}"
+      echo "DEBUG: JFrog User: $JFROG_USER"
+
+      # Do NOT echo password for security!
+      echo "DEBUG: JFROG URL Base: ${var.jfrog_url}"
+      echo "DEBUG: Artifact Version: ${var.java_artifact_version}"
+      echo "DEBUG: Expected artifact filename: ${local.java_artifact_filename}"
+      echo "DEBUG: Local artifact path: ${local.java_artifact_local_path}"
+      DOWNLOAD_URL="${var.jfrog_url}${local.java_artifact_filename}"
+      echo "DEBUG: Attempting to download from: $DOWNLOAD_URL"
+
+      curl -v -f -u "$JFROG_USER:$JFROG_PASSWORD" "$DOWNLOAD_URL" -o "${local.java_artifact_local_path}" \
+        || { echo "ERROR: Curl download failed! Check URL, credentials, and network connectivity. Curl exit code: $?"; exit 1; }
+      
+      # Verify if the downloaded file exists and is not empty
+      if [ -s "${local.java_artifact_local_path}" ]; then
+          echo "SUCCESS: Deployment zip downloaded and is not empty: ${local.java_artifact_local_path}"
+      else
+          echo "ERROR: Downloaded file is empty or does not exist at expected path: ${local.java_artifact_local_path}"
+          exit 1
+      fi
+      # echo "Downloading deployment zip from JFrog Artifactory..."
+      # curl -u "$JFROG_USER:$JFROG_PASSWORD" "${var.jfrog_url}database_service_project-${var.java_artifact_version}-SNAPSHOT.zip" -o "${local.java_artifact_local_path}"
+      # echo "Deployment zip downloaded to: ${local.java_artifact_local_path}"
     EOT
   }
 }
