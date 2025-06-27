@@ -22,14 +22,14 @@ resource "azurerm_linux_web_app" "webapp" {
       python_version      = var.technology == "python" ? var.python_version : null
       dotnet_version      = var.technology == "dotnet" ? var.dotnet_version : null
     }
-    app_command_line = var.technology == "java" ? "java -jar /home/site/wwwroot/database_service_project-${var.java_artifact_version}-SNAPSHOT.zip --server.port=80" : null
+    app_command_line = var.technology == "java" ? "java -jar /home/site/wwwroot/database_service_project-${var.java_artifact_version}.jar" : null
   }
   
 # It takes the path to the local ZIP file.
-  zip_deploy_file = var.artifact_path
-  lifecycle {
-    ignore_changes = [
-      zip_deploy_file # Ignore changes to the zip_deploy_file itself after initial deployment
-    ]
-  }
+#  zip_deploy_file = var.artifact_path
+#  lifecycle {
+#    ignore_changes = [
+#      zip_deploy_file # Ignore changes to the zip_deploy_file itself after initial deployment
+#    ]
+#  }
 }
