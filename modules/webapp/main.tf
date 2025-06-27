@@ -7,11 +7,11 @@ resource "azurerm_linux_web_app" "webapp" {
 
   app_settings = {
     WEBSITE_RUN_FROM_PACKAGE = "1"
-    # WEBSITES_PORT = "8080" # Uncomment if your app listens on this port
+    WEBSITES_PORT = "8080" # Uncomment if your app listens on this port
   }
 
   site_config {
-    always_on           = true # Recommended for Java apps
+    always_on           = true
     minimum_tls_version = var.minimum_tls_version
 
     application_stack {
@@ -26,9 +26,9 @@ resource "azurerm_linux_web_app" "webapp" {
   }
   
 # It takes the path to the local ZIP file.
-#  zip_deploy_file = var.artifact_path
-#  lifecycle {
-#    ignore_changes = [
+  zip_deploy_file = var.artifact_path
+# lifecycle {
+#  ignore_changes = [
 #      zip_deploy_file # Ignore changes to the zip_deploy_file itself after initial deployment
 #    ]
 #  }
