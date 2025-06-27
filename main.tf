@@ -1,6 +1,7 @@
 locals {
   # Path where the pre-zipped artifact will be downloaded locally
   java_artifact_local_path = "${path.cwd}/artifacts/database_service_project-${var.java_artifact_version}-SNAPSHOT.zip"
+  java_artifact_filename = "database_service_project-${var.java_artifact_version}-SNAPSHOT.zip"
 }
 
 # Resource to download the Java artifact
