@@ -89,8 +89,8 @@ module "webappjava" {
   minimum_tls_version   = "1.2"
   technology            = "java"
   java_version          = "11"
-  java_server           = "TOMCAT"
-  java_server_version   = "10.0"
+  java_server           = "JAVA"
+  java_server_version   = "11"
   java_artifact_version = var.java_artifact_version
   artifact_path         = local.java_artifact_local_path # Pass the local path to the module
   depends_on = [
